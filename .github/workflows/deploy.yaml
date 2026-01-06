@@ -1,0 +1,18 @@
+name: Simple deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to server on push to main
+        uses: appleboy/ssh-action@23bd972bfcf52bf00cbb7f7f62b2bb06c2efa5b4
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: deploy.sh

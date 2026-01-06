@@ -1,0 +1,31 @@
+# This file is only used for the creation of the SSL certificates
+# It is not meant to be used manually.
+# When you run the `bootstrap.sh` script in `production`, this file
+# will be used temporarily to allow certbot challenges.
+# Once certbot is done generating our SSL certificates, we immediately
+# create the real Nginx configuration using the app.conf.template file.
+# That will be the permanent Nginx configuration file.
+
+resolver 127.0.0.11 valid=1s ipv6=off;
+
+server {
+  listen 80;
+  listen [::]:80;
+
+  # The domains need to be set in the .env file
+  server_name ${DOMAINS};
+  server_tokens off;
+
+  # The webroot for certbot HTTP-01 challenges
+  location /.well-known/acme-challenge/ {
+    root /var/www/certbot;
+  }
+
+  # While our certificates are being generated, we'd still return a
+  # lightweight response without any content.
+  location / {
+    # No content:
+    # Tell the client that the request worked, but we have nothing to deliver.
+    return 204;
+  }
+}

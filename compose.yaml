@@ -1,0 +1,75 @@
+services:
+  dockerlabs:
+    pull_policy: never
+    image: ${DC_APP_IMAGE_NAME}
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: '${DC_DOCKERFILE}'
+      target: development
+      args:
+        - CURRENT_ENV=${CURRENT_ENV}
+    scale: 2
+    env_file:
+      - .env
+    healthcheck:
+      test: ['CMD', 'curl', '--fail', 'http://localhost:8000/health']
+      interval: 10s
+      timeout: 2s
+      retries: 3
+      start_period: 30s
+    develop:
+      watch:
+        - action: sync+restart
+          path: .
+          target: /app
+          ignore:
+            - .venv/
+            - __pycache__/
+        - action: rebuild
+          path: ./uv.lock
+    networks:
+      main_network:
+        aliases:
+          - ${DC_APP_IMAGE_NAME}
+
+  nginx:
+    container_name: nginx
+    image: nginx:1.29.4-alpine
+    restart: unless-stopped
+    ports:
+      - 443:443
+      - 80:80
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./ssl_conf/certbot/:/etc/letsencrypt/
+      - ./ssl_conf/certbot/www:/var/www/certbot
+      - ./ssl_conf/development/:/etc/letsencrypt/live/development
+      - ./scripts/nginx_renewal.sh:/scripts/nginx_renewal.sh
+    command: /scripts/nginx_renewal.sh
+    depends_on:
+      dockerlabs:
+        condition: service_healthy
+    env_file:
+      - .env
+    networks:
+      - main_network
+
+  certbot:
+    image: certbot/certbot:v5.2.2
+    container_name: certbot
+    restart: unless-stopped
+    volumes:
+      - ./ssl_conf/certbot/:/etc/letsencrypt/
+      - ./ssl_conf/certbot/www:/var/www/certbot
+      - ./scripts/certbot_renewal.sh:/scripts/certbot_renewal.sh
+    entrypoint: /scripts/certbot_renewal.sh
+    networks:
+      - main_network
+networks:
+  main_network:
+    ipam:
+      driver: default
+      config:
+        - subnet: '10.11.12.0/24'
