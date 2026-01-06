@@ -10,6 +10,10 @@ production server created in video two.
 > (`luizomf/dockeryt`) untouched. All production changes live here so the
 > recorded content stays consistent.
 
+## The Full Playlist
+
+- [Docker em Produção: Do Zero ao Deploy Seguro](https://www.youtube.com/playlist?list=PLbIBj8vQhvm2yRvAlZn4xn_yFLvhBt68o)
+
 ---
 
 ## Stack at a Glance
