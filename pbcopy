@@ -1,19 +1,15 @@
-" MOST OF THE COMMENTED LINES NEED EXTERNAL DATA WHICH I'M
-" NOT WILLING TO ADD IN SERVER FOR SECURITY REASONS.
-
 " Download plug.vim to ~/.vim/autoload
 "
 " curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 "   https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 "
-" call plug#begin('~/.vim/plugged')
+call plug#begin('~/.vim/plugged')
 " fzf
-" Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-" Plug 'junegunn/fzf.vim'
-" call plug#end()
-"
-" packadd! hlyank
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+call plug#end()
 
+packadd! hlyank
 syntax on
 
 set nocompatible
