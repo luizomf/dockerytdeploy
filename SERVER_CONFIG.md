@@ -163,7 +163,7 @@ KbdInteractiveAuthentication no # we don't need that (it's a 2FA)
 ChallengeResponseAuthentication no # we also don't need that
 PermitRootLogin no # never allow root login
 PermitEmptyPasswords no # never allow empty password
-UsePAM yes # this is the authentication method
+UsePAM no # this is the authentication method
 
 # If you want even more security, add users and groups allowed to login
 # If you do something wrong here, you wont be able to login later.
